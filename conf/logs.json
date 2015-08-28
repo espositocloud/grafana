@@ -16,7 +16,7 @@
       "panels": [
         {
           "aliasColors": {},
-          "bars": false,
+          "bars": true,
           "datasource": null,
           "editable": true,
           "error": false,
@@ -43,7 +43,7 @@
             "total": false,
             "values": false
           },
-          "lines": true,
+          "lines": false,
           "linewidth": 2,
           "links": [],
           "nullPointMode": "connected",
@@ -59,8 +59,12 @@
             {
               "column": "body_bytes_sent",
               "function": "mean",
-              "query": "select mean(body_bytes_sent) from \"nginx.access\" where $timeFilter group by time($interval) order asc",
-              "series": "nginx.access"
+              "query": "select mean(body_bytes_sent) from \"nginx.access\" where $timeFilter group by time($interval) fill(0) order asc",
+              "series": "nginx.access",
+              "refId": "A",
+              "alias": "Bandwidth",
+              "interval": "",
+              "fill": "0"
             }
           ],
           "timeFrom": null,
@@ -74,138 +78,113 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "short",
+            "Bps",
             "short"
-          ]
+          ],
+          "transparent": true
         }
       ],
       "title": "Row"
     },
     {
-      "title": "Row 1",
-      "height": "250px",
-      "editable": true,
       "collapse": false,
+      "editable": true,
+      "height": "250px",
       "panels": [
         {
-          "title": "HTTP Status Codes",
-          "error": false,
-          "span": 12,
-          "editable": true,
-          "type": "graph",
-          "id": 2,
+          "aliasColors": {},
+          "bars": true,
           "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 2,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": false,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
           "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Success",
+              "column": "status",
+              "condition": "status < 400",
+              "function": "count",
+              "interval": "1s",
+              "query": "select count(status) from \"nginx.access\" where $timeFilter and status < 400 group by time($interval) fill(0) order asc",
+              "refId": "A",
+              "series": "nginx.access",
+              "fill": "0"
+            },
+            {
+              "alias": "Error",
+              "column": "status",
+              "condition": "status >= 400",
+              "function": "count",
+              "query": "select count(status) from \"nginx.access\" where $timeFilter and status >= 400 group by time($interval) fill(0) order asc",
+              "refId": "A",
+              "series": "nginx.access",
+              "target": "",
+              "interval": "1s",
+              "fill": "0"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "HTTP Status Codes",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
             "short",
             "short"
           ],
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "rightMax": null,
-            "leftMin": null,
-            "rightMin": null,
-            "rightLogBase": 1,
-            "threshold1": null,
-            "threshold2": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "lines": true,
-          "fill": 1,
-          "linewidth": 1,
-          "points": false,
-          "pointradius": 5,
-          "bars": false,
-          "stack": true,
-          "percentage": false,
-          "legend": {
-            "show": true,
-            "values": false,
-            "min": false,
-            "max": false,
-            "current": false,
-            "total": false,
-            "avg": false
-          },
-          "nullPointMode": "connected",
-          "steppedLine": false,
-          "tooltip": {
-            "value_type": "cumulative",
-            "shared": true
-          },
-          "timeFrom": null,
-          "timeShift": null,
-          "targets": [
-            {
-              "function": "count",
-              "column": "status",
-              "series": "nginx.access",
-              "query": "select count(status) from \"nginx.access\" where $timeFilter and status <= 399 group by time($interval) order asc",
-              "condition": "status <= 399",
-              "interval": "1s"
-            },
-            {
-              "target": "",
-              "function": "count",
-              "column": "status",
-              "series": "nginx.access",
-              "query": "select count(status) from \"nginx.access\" where $timeFilter and status >= 400 group by time($interval) order asc",
-              "condition": "status >= 400"
-            }
-          ],
-          "aliasColors": {},
-          "seriesOverrides": [],
-          "links": []
+          "leftYAxisLabel": "requests/s",
+          "rightYAxisLabel": "",
+          "transparent": true
         }
-      ]
+      ],
+      "title": "Row 1"
     },
     {
-      "title": "Row 1",
-      "height": "250px",
-      "editable": true,
       "collapse": false,
+      "editable": true,
+      "height": "250px",
       "panels": [
         {
-          "title": "Success",
-          "error": false,
-          "span": 6,
-          "editable": true,
-          "type": "singlestat",
-          "id": 3,
-          "links": [],
-          "maxDataPoints": 100,
-          "interval": null,
-          "targets": [
-            {
-              "function": "count",
-              "column": "status",
-              "series": "nginx.access",
-              "query": "select count(status) from \"nginx.access\" where $timeFilter and status <= 400 group by time($interval) order asc",
-              "condition": "status <= 400"
-            }
-          ],
           "cacheTimeout": null,
-          "format": "none",
-          "prefix": "",
-          "postfix": "",
-          "nullText": null,
-          "valueMaps": [
-            {
-              "value": "null",
-              "op": "=",
-              "text": "N/A"
-            }
-          ],
-          "nullPointMode": "connected",
-          "valueName": "avg",
-          "prefixFontSize": "50%",
-          "valueFontSize": "80%",
-          "postfixFontSize": "50%",
-          "thresholds": "",
           "colorBackground": false,
           "colorValue": false,
           "colors": [
@@ -213,50 +192,55 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(50, 172, 45, 0.97)"
           ],
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "format": "none",
+          "id": 3,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 3,
           "sparkline": {
-            "show": false,
+            "fillColor": "rgba(31, 118, 189, 0.18)",
             "full": false,
             "lineColor": "rgb(31, 120, 193)",
-            "fillColor": "rgba(31, 118, 189, 0.18)"
-          }
+            "show": false
+          },
+          "targets": [
+            {
+              "column": "status",
+              "condition": "status <= 400",
+              "function": "count",
+              "query": "select count(status) from \"nginx.access\" where $timeFilter and status <= 400 group by time($interval) fill(0) order asc",
+              "series": "nginx.access",
+              "refId": "A",
+              "fill": "0"
+            }
+          ],
+          "thresholds": "",
+          "title": "Success",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg",
+          "transparent": true,
+          "minSpan": null
         },
         {
-          "title": "Failed",
-          "error": false,
-          "span": 6,
-          "editable": true,
-          "type": "singlestat",
-          "id": 4,
-          "links": [],
-          "maxDataPoints": 100,
-          "interval": null,
-          "targets": [
-            {
-              "function": "count",
-              "column": "status",
-              "series": "nginx.access",
-              "query": "select count(status) from \"nginx.access\" where $timeFilter and status >= 400 group by time($interval) order asc",
-              "condition": "status >= 400"
-            }
-          ],
           "cacheTimeout": null,
-          "format": "none",
-          "prefix": "",
-          "postfix": "",
-          "nullText": null,
-          "valueMaps": [
-            {
-              "value": "null",
-              "op": "=",
-              "text": "N/A"
-            }
-          ],
-          "nullPointMode": "connected",
-          "valueName": "avg",
-          "prefixFontSize": "50%",
-          "valueFontSize": "80%",
-          "postfixFontSize": "50%",
-          "thresholds": "",
           "colorBackground": false,
           "colorValue": false,
           "colors": [
@@ -264,14 +248,126 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(50, 172, 45, 0.97)"
           ],
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "format": "none",
+          "id": 4,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 3,
           "sparkline": {
-            "show": false,
+            "fillColor": "rgba(31, 118, 189, 0.18)",
             "full": false,
             "lineColor": "rgb(31, 120, 193)",
-            "fillColor": "rgba(31, 118, 189, 0.18)"
-          }
+            "show": false
+          },
+          "targets": [
+            {
+              "column": "status",
+              "condition": "status >= 400",
+              "function": "count",
+              "query": "select count(status) from \"nginx.access\" where $timeFilter and status >= 400 group by time($interval) fill(0) order asc",
+              "series": "nginx.access",
+              "refId": "A",
+              "fill": "0"
+            }
+          ],
+          "thresholds": "",
+          "title": "Failed",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "0",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg",
+          "transparent": true
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "format": "none",
+          "id": 6,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 3,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "targets": [
+            {
+              "column": "status",
+              "condition": "status <= 400",
+              "function": "count",
+              "query": "select count(status) from \"nginx.access\" where $timeFilter and status <= 400 group by time($interval) order asc",
+              "series": "nginx.access",
+              "refId": "A",
+              "hide": false,
+              "alias": "success",
+              "interval": "",
+              "fill": ""
+            },
+            {
+              "column": "status",
+              "condition": "status < 400",
+              "function": "count",
+              "query": "select count(status) from \"nginx.access\" where $timeFilter and status < 400 group by time($interval) order asc",
+              "series": "nginx.access",
+              "refId": "A",
+              "hide": false,
+              "alias": "failure",
+              "interval": "",
+              "fill": ""
+            }
+          ],
+          "thresholds": "",
+          "title": "%Success",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "value": "",
+              "op": "=",
+              "text": ""
+            }
+          ],
+          "valueName": "avg",
+          "transparent": true,
+          "minSpan": null,
+          "decimals": null
         }
-      ]
+      ],
+      "title": "Row 1"
     }
   ],
   "nav": [
@@ -308,7 +404,7 @@
     }
   ],
   "time": {
-    "from": "now-1h",
+    "from": "now-15m",
     "to": "now"
   },
   "templating": {
@@ -317,8 +413,8 @@
   "annotations": {
     "list": []
   },
-  "refresh": "10s",
+  "refresh": "5s",
   "schemaVersion": 6,
-  "version": 3,
+  "version": 0,
   "links": []
 }
